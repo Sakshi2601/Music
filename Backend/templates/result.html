@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Result</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body style="font-family: sans-serif; background: #111; color: #fff;">
+  <div style="max-width: 600px; margin: 50px auto; background: #222; padding: 20px; border-radius: 12px;">
+    <h2 style="text-align:center;">Your Performance</h2>
+    <p style="text-align:center; font-size: 1.2rem;">{{ message }}</p>
+    <p style="text-align:center;">Accuracy: <strong>{{ accuracy }}%</strong></p>
+
+    <canvas id="notesChart" width="400" height="200"></canvas>
+
+    <a href="/" style="display: block; text-align: center; margin-top: 20px; color: orange;">Go Back</a>
+
+    <script>
+
+      const expected = JSON.parse('{{ expected_notes | tojson | safe }}');
+      const recorded = JSON.parse('{{ recorded_notes | tojson | safe }}'); 
+      const labels = Array.from({length: Math.min(expected.length, recorded.length)}, (_, i) => `Note ${i+1}`);
+
+      new Chart(document.getElementById('notesChart'), {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Expected Notes',
+              data: expected.slice(0, labels.length),
+              borderColor: 'orange',
+              fill: false,
+              tension: 0.2
+            },
+            {
+              label: 'Your Notes',
+              data: recorded.slice(0, labels.length),
+              borderColor: 'lightblue',
+              fill: false,
+              tension: 0.2
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { labels: { color: 'white' } }
+          },
+          scales: {
+            x: { ticks: { color: 'white' }},
+            y: { ticks: { color: 'white' }}
+          }
+        }
+      });
+    </script>
+  </div>
+</body>
+</html>
